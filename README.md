@@ -4,6 +4,7 @@ Frameworks and DataBase Used
 1. Spring boot
 2. Angular 9
 3.MySql
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 How to Run
 This application is packaged as a jar file. No Tomcat or JBoss installation is necessary. 
 You run it using the java -jar command.
