@@ -1,0 +1,8 @@
+package com.eventdata.repo;
+
+import org.springframework.stereotype.Repository;
+
+@Repository 
+public interface EventRepository {
+	
+}

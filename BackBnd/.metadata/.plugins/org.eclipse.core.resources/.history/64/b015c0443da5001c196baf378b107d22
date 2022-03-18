@@ -1,0 +1,10 @@
+package com.eventdata.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import com.eventdata.service.EventService;
+
+
+public class MultithreadScraping {
+}

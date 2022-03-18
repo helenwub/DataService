@@ -1,0 +1,79 @@
+package com.eventdata.service;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
+import com.eventdata.model.EventData;
+import com.eventdata.repo.EventRepository;
+import com.eventdata.scraper.Scraper;
+@Service
+public class EventService {
+	@Autowired
+	EventRepository repo;
+	
+	public static final int THOUSAND_SECONDS = 10;
+	
+	@Scheduled(fixedRate = THOUSAND_SECONDS, initialDelay = 1000)
+	public  void scheduleScraping() {
+		final Scraper scraper=new Scraper();
+		List<EventData> li=null;		
+		try {
+			li=scraper.extractEvents();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		for(int i=0;i<li.size();i++)
+		{
+			li.get(i).setId((long)(i+1));
+		    repo.save(li.get(i));
+		}	
+	}
+	@Scheduled(fixedDelay = 5)
+	public static void main(String []args)
+	{
+		for(int i=0;i<5;i++)
+		{
+		System.out.print("Hello Mussie");
+		}
+	}
+	
+    public List <EventData> getAll()
+    {
+     	scheduleScraping();
+    	return repo.findAll();
+    }
+    @Async
+    public CompletableFuture<List<EventData>> saveEvents(String webName)
+    {
+		final Scraper scraper=new Scraper();
+		List<EventData> events=null;
+		try {
+			events=scraper.extractEvents(webName);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		repo.saveAll(events);
+//		for(int i=0;i<3;i++)
+//		{
+//		    repo.save(events.get(i));
+//		}
+    	return CompletableFuture.completedFuture(events);
+    }
+    @Async
+    public CompletableFuture<List<EventData>> getEvents()
+    {
+    	List<EventData> events=repo.findAll();
+    	return CompletableFuture.completedFuture(events);
+    }
+    
+	public EventData save(EventData e) {
+		// TODO Auto-generated method stub
+		return repo.save(e);
+	}
+}

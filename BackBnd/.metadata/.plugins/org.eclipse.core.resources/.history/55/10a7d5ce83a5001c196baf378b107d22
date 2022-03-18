@@ -1,0 +1,103 @@
+package com.eventdata.service;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.eventdata.model.EventData;
+import com.eventdata.repo.EventRepository;
+import com.eventdata.scraper.Scraper;
+@Service
+public class EventService {
+	@Autowired
+	EventRepository repo;
+	private static final Logger LOGGER = LoggerFactory.getLogger(EventService.class);
+
+	public static final int THOUSAND_SECONDS = 10;
+	
+	@Scheduled(fixedRate = THOUSAND_SECONDS, initialDelay = 1000)
+	public  void scheduleScraping() {
+		final Scraper scraper=new Scraper();
+		List<EventData> li=null;		
+		try {
+			li=scraper.extractEvents();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		for(int i=0;i<li.size();i++)
+		{
+			li.get(i).setId((long)(i+1));
+		    repo.save(li.get(i));
+		}	
+	}
+	@Scheduled(fixedDelay = 5)
+	public static void main(String []args)
+	{
+		for(int i=0;i<5;i++)
+		{
+		System.out.print("Hello Mussie");
+		}
+	}
+	
+    public List <EventData> getAll()
+    {
+     	scheduleScraping();
+    	return repo.findAll();
+    }
+    @Async
+    public CompletableFuture<List<EventData>> saveEvents(String webName)
+    {
+//		final Scraper scraper=new Scraper();
+		List<EventData> events=null;
+		final long start = System.currentTimeMillis();
+		LOGGER.info("Start time: {}",  start);
+		String exeString="java -jar"+webName;
+		// Run a java app in a separate system process
+		Process proc = null;
+		try {
+			proc = Runtime.getRuntime().exec(exeString);
+			// Then retreive the process output
+			InputStream in = proc.getInputStream();
+			InputStream err = proc.getErrorStream();
+			LOGGER.info("IN is:"+in.toString());
+			LOGGER.info("ERR is:"+err.toString());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
+//		try {
+//			events=scraper.extractEvents(webName);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		repo.saveAll(events);
+//		for(int i=0;i<30;i++)
+//		{
+//		    repo.save(events.get(i));
+//		    
+//		}
+		LOGGER.info("Elapsed time: {}", (System.currentTimeMillis() - start));
+    	return CompletableFuture.completedFuture(events);
+    }
+    @Async
+    public CompletableFuture<List<EventData>> getEvents()
+    {
+    	List<EventData> events=repo.findAll();
+    	return CompletableFuture.completedFuture(events);
+    }
+    
+	public EventData save(EventData e) {
+		// TODO Auto-generated method stub
+		return repo.save(e);
+	}
+}

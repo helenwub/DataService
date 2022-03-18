@@ -1,0 +1,37 @@
+package com.eventdata.model;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Entity
+@NoArgsConstructor
+
+public class EventData {
+	
+	@Id
+	@Column (name = "ID", nullable = false)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Long id;
+	public static String webName;
+	private String eventName;
+	private String eventDate;
+	private String location;
+	public EventData(Long id, String eventName, String eventDate, String location) {
+		super();
+		eventName="";
+		this.id = id;
+		this.eventName = eventName;
+		this.eventDate = eventDate;
+		this.location = location;
+	}
+
+
+}

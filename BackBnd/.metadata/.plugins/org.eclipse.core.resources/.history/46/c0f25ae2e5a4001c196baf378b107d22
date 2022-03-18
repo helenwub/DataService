@@ -1,0 +1,75 @@
+package com.eventdata.scraper;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.LogManager;
+
+import com.eventdata.model.EventData;
+import com.eventdata.repo.EventRepository;
+
+public class Scraper implements Runnable{
+	private static Logger log = LogManager.getLogger(Scraper.class);
+	@Autowired
+	EventRepository repo;
+	public static final int THOUSAND_SECONDS = 10;
+	@Scheduled(fixedRate = THOUSAND_SECONDS, initialDelay = 1000)
+	public  void scheduleScraping() {
+		final Scraper scraper=new Scraper();
+		List<EventData> li=null;		
+		try {
+			li=scraper.extractEvents();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		while(repo==null)
+			{
+			System.out.print("Hello Mussie");
+			}
+//		TODO: uncomment this before submit
+//		for(int i=0;i<li.size();i++)
+		for(int i=0;i<3;i++)
+		{
+			li.get(i).setId((long)(i+1));
+		    repo.save(li.get(i));
+		}	
+	}
+    public void run()
+    {
+    	scheduleScraping();
+    }
+	public List <EventData> extractEvents()throws IOException
+	{
+	  log.info("Hello, World!");
+	  final	List <EventData> events=new ArrayList<>();
+	  final Document doc=Jsoup.connect("https://www.techmeme.com/events").get();
+	  Elements webTitleElements=doc.getElementsByClass("evhed");
+	  webTitleElements = webTitleElements.get(0).select("a[href]");
+	  
+	  final Elements eventElements=doc.getElementsByClass("rhov");
+	  doc.select("em").remove();
+	  for(final Element eventData:eventElements)
+	  {
+		  EventData event=new EventData();
+		  Elements titleElements = eventData.getElementsByTag("a");
+		  titleElements = titleElements.get(0).getElementsByTag("div");
+             event.setWebName(webTitleElements.text());
+		     event.setEventDate(titleElements.get(0).getElementsByIndexEquals(0).text());
+		     event.setEventName(titleElements.get(1).getElementsByIndexEquals(1).text());
+		     event.setLocation(titleElements.get(2).getElementsByIndexEquals(2).text());
+		   
+		     events.add(event);
+	  } 
+	  return events; 
+	}
+
+}

@@ -1,0 +1,5 @@
+package com.eventdata.scraper;
+
+public interface Scraper {
+
+}

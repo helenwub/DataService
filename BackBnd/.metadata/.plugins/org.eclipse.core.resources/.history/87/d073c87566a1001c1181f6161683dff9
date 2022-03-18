@@ -1,0 +1,29 @@
+package com.eventdata.config;
+
+import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
+import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+
+import antlr.debug.Event;
+
+public class MyDataRestConfig implements RepositoryRestConfigurer{
+
+	@Override
+	public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
+		
+		HttpMethod [] unsupportedActions= {HttpMethod.PUT,HttpMethod.POST,HttpMethod.DELETE};
+		//Disable HTTP methods PUT,POST,and DELETE
+		
+		config.getExposureConfiguration()
+		.forDomainType(Event.class)
+		.withItemExposure((metadata,httpMethods)->httpMethods.disable(unsupportedActions))
+		.withCollectionExposure((metadata,httpMethods)->httpMethods.disable(unsupportedActions));
+		
+		
+	}
+	
+	
+	
+
+}

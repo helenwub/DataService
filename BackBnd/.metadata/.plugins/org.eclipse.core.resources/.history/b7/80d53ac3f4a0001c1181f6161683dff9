@@ -1,0 +1,5 @@
+package com.eventdata.repo;
+
+public interface EventRepository {
+
+}

@@ -1,0 +1,27 @@
+package com.eventdata.config;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.eventdata.model.EventData;
+import com.eventdata.service.EventService;
+import com.eventdata.service.EventService2;
+
+@RestController
+@RequestMapping("/event")
+public class Controller {
+	
+	@Autowired
+	EventService ser;
+	@GetMapping("/eventDatas")
+	public ResponseEntity<List<EventData>> getAll() {
+        return new ResponseEntity<>(ser.getAll(), HttpStatus.OK);
+    }
+
+}

@@ -1,0 +1,10 @@
+package com.eventdata.scraper;
+
+import java.io.IOException;
+import java.util.List;
+
+import com.eventdata.model.EventData;
+
+public interface Scraper {
+	public List <EventData> extractEvents() throws IOException;
+}

@@ -1,0 +1,9 @@
+package com.eventdata.scraper;
+
+import java.util.List;
+
+import com.eventdata.model.EventData;
+
+public interface Scraper {
+	public List <EventData> extractEvents();
+}

@@ -1,0 +1,41 @@
+package com.eventdata.scraper;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import com.eventdata.model.EventData;
+
+public class Scraper {
+	
+	public static List<EventData> extractEvents()throws IOException
+	{
+	  final	List <EventData> events=new ArrayList<>();
+	  final Document doc=Jsoup.connect("https://www.techmeme.com/events").get();
+	  final Elements eventElements=doc.getElementsByTag("a");
+	 
+	  for(final Element eventData:eventElements)
+	  {
+		  EventData event=new EventData();
+		  
+		  Elements titleElements = eventData.getElementsByTag("div");
+		  for(Element text:titleElements)
+		  {
+		   //  System.out.println(text.siblingIndex() +" "+ text.getElementsByIndexEquals(0).text());
+		     event.setWebName(text.getElementsByIndexEquals(0).text());
+		     event.setEventName(text.getElementsByIndexEquals(1).text());
+		     event.setLocation(text.getElementsByIndexEquals(0).text());
+		  }
+		  events.add(event);
+	  }
+	 
+	  return events; 
+	}
+	
+
+}

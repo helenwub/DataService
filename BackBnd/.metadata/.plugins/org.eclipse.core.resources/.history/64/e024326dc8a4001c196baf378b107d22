@@ -1,0 +1,18 @@
+package com.eventdata.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import com.eventdata.service.EventService;
+
+@Configuration
+public class MultithreadScraping {
+  @Bean
+  public void implimentThread()
+  {
+	  Thread thread=new Thread(new EventService());
+	  thread.start();
+			  
+  }
+  
+}

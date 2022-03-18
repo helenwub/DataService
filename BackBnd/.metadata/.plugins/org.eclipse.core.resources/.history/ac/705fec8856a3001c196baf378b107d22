@@ -1,0 +1,23 @@
+package com.eventdata.service;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.eventdata.model.EventData;
+import com.eventdata.repo.EventRepository;
+
+@Service
+public class EventService2 {
+	@Autowired
+	EventRepository repo;
+	Logger logger = LogManager.getLogger(EventService2.class);
+	public void saveAll()
+	{
+		EventData e=new EventData((long)1,"Eve","Sac","event");
+		logger.debug("Helen is here");
+		repo.save(e);
+	}
+	
+
+}

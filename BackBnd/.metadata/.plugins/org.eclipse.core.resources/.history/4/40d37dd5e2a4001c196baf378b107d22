@@ -1,0 +1,18 @@
+package com.eventdata;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import com.eventdata.service.EventService;
+
+@SpringBootApplication
+public class EventApplication {
+
+	public static void main(String[] args) {
+		
+		Thread th=new Thread(new EventService());
+		th.start();
+		SpringApplication.run(EventApplication.class, args);
+	}
+
+}

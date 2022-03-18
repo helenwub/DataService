@@ -1,0 +1,36 @@
+<div class="main-content">
+    <div class="section-content section-content-p30">
+        <div class="container-fluid">
+            <label class="col-md-0 mb-3"> Sort by &nbsp;</label>
+            <select [(ngModel)]='SortbyParam'>
+                <option value="eventName">Event</option>
+                <option value="location">Location</option>
+                <option value="webName">webName</option>
+            </select>
+            <button type="button" (click)="onSortDirection()">
+                <i *ngIf="SortDirection==='asc'" class="fas fa-sort-alpha-down"></i>
+                <i *ngIf="SortDirection==='desc'" class="fas fa-sort-alpha-up"></i>
+            </button>
+            <label>Filter Event: &nbsp; </label>
+            <input [(ngModel)]='Name'>
+            <button type="button" (click)="onEventFilter()">Search</button>
+            <button type="button" (click)="onEventFilterClear()">Clear</button> &nbsp;
+            <div class="row">
+                <div *ngFor="let tempEvent of events | filter:Name:SortbyParam" class="col-md-3 mb-3">
+                    <div class="card-column">
+                        <div class="card" style="width: 18rem;">
+                            <img class="propImg" src="assets\images\events.png">
+                            <div class="card-body">
+                                <h5 class="card-title">{{tempEvent.eventName}}</h5>
+                                <p class="card-text">{{tempEvent.location}}</p>
+                                <p class="card-text">Event by {{tempEvent.webName}}</p>
+                                <i class="far">&#xf073; {{tempEvent.eventDate}}</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,44 @@
+package com.eventdata.controller;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.eventdata.model.EventData;
+import com.eventdata.service.EventService;
+
+@CrossOrigin("http://localhost:4200")
+@RestController
+@RequestMapping("/event")
+public class Controller{
+	private static final Logger LOGGER = LoggerFactory.getLogger(Controller.class);
+	@Autowired
+	EventService evntSer;
+	
+	@GetMapping("/eventDatas")
+	public ResponseEntity<List<EventData>> getAll() {
+		return new ResponseEntity<>(evntSer.getAll(), HttpStatus.OK);
+    }
+	@PostMapping("/webList")
+	public ResponseEntity<EventData> newEvent(@RequestParam (value="web") List<String> webFiles) {
+		for(String listName:webFiles)
+		{
+			LOGGER.info("logging before calling the method"+listName);
+			evntSer.saveEvents(listName);
+			LOGGER.info("logging after calling the method"+listName);
+		}
+	    return new ResponseEntity<>(HttpStatus.OK);
+	  }
+
+    
+}

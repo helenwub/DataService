@@ -1,0 +1,48 @@
+package com.eventdata.scraper;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import com.eventdata.model.EventData;
+
+public class ComputerWorld {
+	
+	public static List <EventData> extractEvents()throws IOException
+	{
+		
+	  final	List <EventData> events=new ArrayList<>();
+	  final Document doc=Jsoup.connect("https://www.computerworld.com/article/3313417/tech-event-calendar-shows-conferences-and-it-expos-updated.html").get();
+	  final Element eventTable=doc.getElementById("cwsearchabletable");
+	  Elements tableBody=eventTable.getElementsByTag("tbody");
+	  Elements tableRaw=tableBody.get(0).getElementsByTag("tr");
+	  for(final Element eventData:tableRaw)
+	  {
+		  EventData event=new EventData();
+		  if(eventData.hasClass("odd"))
+		  {
+			  System.out.print(eventData.getAllElements());
+		  }
+		  Elements webSiteName=doc.getElementsByClass("logo");
+		  event.setWebName(webSiteName.get(0).text());
+		  
+		  
+		  events.add(event);
+	  } 
+	  return events; 
+	}
+	public static void main(String [] args)
+	{
+		try {
+			System.out.print(extractEvents());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+}
